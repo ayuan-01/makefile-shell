@@ -2,6 +2,8 @@
 
 [初步使用](##初步使用)	[Linux中工具链的配置](##Linux中工具链的配置)	[变量](##变量)	[参数](##参数)	[条件判断](##条件判断)	[循环](##循环)	[输入读取](##输入读取)	[函数](##函数)	[正则表达式](##正则表达式)	[文本处理工具](##文本处理工具)
 
+bash和shell的关系：shell是一个概念，bash是这个概念的一个具体实现。
+
 ## 初步使用
 
 ```sh
@@ -49,6 +51,13 @@ echo $HOME; echo $PWD; echo $SHELL; echo $USER
 export ARM=arm
 ```
 
+## shell脚本中单引号和双引号的区别
+
+```sh
+echo "hello $name" # hello world
+echo 'hello $name' # hello $name
+```
+
 ## 参数
 
 ```sh
@@ -62,6 +71,9 @@ $*; $@;
 
 # 最后一条命令的返回状态
 $?
+
+# 当前shell的进程ID
+$$
 ```
 
 - 运算
@@ -80,7 +92,7 @@ elif
 	echo
 fi
 
-case $A in
+case $1 in
 "1")
 	echo
 ;;
@@ -98,7 +110,36 @@ esac
 -e # 文件存在
 -f # file
 -d # dir
+# 字符串比较
+= !=
+-z # 空串
+-n # 非空串
+# 逻辑
+-a -o !
 ```
+
+替换运算符
+
+* `${var_name:-def_Val}`
+  如果变量var_name存在且为非null，返回该变量的值，否则返回默认值def-Val
+  注意var_name与:之间没有空格，:与-之间可以有空格。主要用途，如果变量未定义，则用默认值。
+* `${var_name:=val}`
+  如果变量var_name存在且为非null，返回该变量的值，否则，把val的值赋给变量var_name，并返回var_name的值val。
+  注意var_name与:之间没有空格，:与=之间也不能有空格。
+* `${var_name:?message}`
+  如果变量var_name存在且为非null，返回该变量的值，否则返回该变量的名字var_name:提示信息meesage，并退出当前命令或脚本。
+  注意 `var_name` 与 `:` 之间没有空格，`:` 与 `?` 之间也不能有空格。
+* `${var_name:+val}`
+  如果变量var_name存在且为非null，返回val，否则返回null。
+  注意 `var_name` 与 `:` 之间没有空格，`:` 与 `+` 之间也不能有空格。
+* `${#val_name}`
+  返回变量长度。
+* `$(())`
+  算术运算操作。
+* `$((var1 opr var2))`
+  例如:  `$((5+1))` 只能是 `+` `-` `*` `/` 和 `()` 运算符，并且只能做整数运算。
+* `$()`
+  命令代换，类似于反引号（`` ` ``）， 例如：`echo $(date)`。
 
 ## 循环
 
